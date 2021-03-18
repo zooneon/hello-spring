@@ -1,15 +1,12 @@
 # 🌱 hello-spring
-스프링 입문 - 코드로 배우는 스프링 부트, 웹 MVC, DB 접근 기술 👈 [강의 보러 가기]([https://www.youtube.com/watch?v=-oeeqfRVrzI&list=PLumVmq_uRGHgBrimIp2-7MCnoPUskVMnd](https://www.youtube.com/watch?v=-oeeqfRVrzI&list=PLumVmq_uRGHgBrimIp2-7MCnoPUskVMnd))
+스프링 입문 - 코드로 배우는 스프링 부트, 웹 MVC, DB 접근 기술 👈 [강의 보러 가기]([https://www.youtube.com/watch?v=-oeeqfRVrzI&list=PLumVmq_uRGHgBrimIp2-7MCnoPUskVMnd)
 
 # 간단 정리
-
----
-
 ## Gradle
 
 Groovy를 이용한 빌드 자동화 시스템
 
-- Maven과 같은 구조화 된build 프레임워크
+- Maven과 같은 구조화된 build 프레임워크
 - Artifacts(Files, Java source and class files 등등..) 빌드
 - Dependencies 관리(자동 업데이트)
 
@@ -156,4 +153,95 @@ public class HelloController {
 
 - 비즈니스 로직을 수행하는 클래스라는 것을 나타냄
 
-[참고]([https://velog.io/@gillog/Spring-Annotation-정리#requestparam](https://velog.io/@gillog/Spring-Annotation-%EC%A0%95%EB%A6%AC#requestparam))
+[참고]([https://velog.io/@gillog/Spring-Annotation-정리#requestparam)
+## 일반적인 웹 애플리케이션 계층 구조
+
+![image](https://user-images.githubusercontent.com/59433441/111621126-f24bf400-882a-11eb-8ee0-93750bc8aa02.png)
+
+- 컨트롤러 : 웹 MVC의 컨트롤러 역할
+- 서비스 : 핵심 비즈니스 로직 구현
+- 레포지토리 : DB에 접근, 도메인 객체를 DB에 저장하고 관리
+- 도메인 : 비즈니스 도메인 객체(회원, 주문, 쿠폰 등등..)
+
+## 테스트 케이스 작성
+
+`src/test/Java` 폴더에 패키지를 만든다.
+
+클래스 이름 관례는 테스트할 클래스에 Test를 붙인다.(ExampleClassTest)
+
+테스트할 메서드에 `@Test` 어노테이션을 붙인다.
+
+모든 테스트는 메서드 순서 **상관없이** 다 따로 동작한다.(순서에 의존관계가 있으면 좋은 테스트가 아님)
+
+### 테스트 라이브러리
+
+- JUnit : 테스트 프레임워크
+- Mockito : JUnit 위에서 동작하며 Mocking과 Verification을 도와주는 프레임워크
+- AssertJ : 테스트 코드를 더 편리하게 작성하도록 도와주는 라이브러리
+- spring-test : 스프링 통합 테스트 지원
+
+### Assertions.assertThat
+
+- `Assertions.assertThat`을 통해 기대한 값이 실제 값과 같은지 알 수 있음
+
+```java
+class MemoryMemberRepositoryTest {
+
+		MemoryMemberRepository repository = new MemoryMemberRepository();
+
+		@Test
+    public void save() {
+        Member member = new Member();
+        member.setName("spring");
+
+        repository.save(member);
+
+        Member result = repository.findById(member.getId()).get();
+				// 같으면 초록색, 다르면 빨간색
+        assertThat(member).isEqualTo(result);
+    }
+}
+```
+
+### @AfterEach
+
+- 메서드 실행이 끝날 때마다 작동하는 콜백 메세지
+
+```java
+class MemoryMemberRepositoryTest {
+
+    MemoryMemberRepository repository = new MemoryMemberRepository();
+
+    @AfterEach
+    public void afterEach() {
+        repository.clear();
+    }
+}
+```
+
+→ 각 테스트가 종료될 때마다 메모리 DB에 저장된 데이터 삭제
+
+### given, when, then
+
+- 뭔가가 주어졌을 때, 무엇을 실행해서 어떤 결과가 나와야하는지 알아보기 편함
+
+```java
+class MemberServiceTest {
+
+		MemberService memberService;
+
+		@Test
+    void join() {
+        // given
+        Member member = new Member();
+        member.setName("hello");
+
+        // when
+        Long saveId = memberService.join(member);
+
+        // then
+        Member findMember = memberService.findOne(saveId).get();
+        assertThat(member.getName()).isEqualTo(findMember.getName());
+    }
+}
+```
