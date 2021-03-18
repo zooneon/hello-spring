@@ -1,7 +1,21 @@
 # 🌱 hello-spring
-스프링 입문 - 코드로 배우는 스프링 부트, 웹 MVC, DB 접근 기술 👈 [강의 보러 가기]([https://www.youtube.com/watch?v=-oeeqfRVrzI&list=PLumVmq_uRGHgBrimIp2-7MCnoPUskVMnd)
+스프링 입문 - 코드로 배우는 스프링 부트, 웹 MVC, DB 접근 기술 👈 [강의 보러 가기](https://www.youtube.com/watch?v=-oeeqfRVrzI&list=PLumVmq_uRGHgBrimIp2-7MCnoPUskVMnd)
 
 # 간단 정리
+[Gradle](#gradle)
+
+[정적 컨텐츠](#정적-컨텐츠)
+
+[템플릿 엔진](#템플릿-엔진)
+
+[API 방식](#api-방식)
+
+[Annotation](#annotation)
+
+[일반적인 웹 애플리케이션 계층 구조](#일반적인-웹-애플리케이션-계층-구조)
+
+[테스트 케이스 작성](#테스트-케이스-작성)
+
 ## Gradle
 
 Groovy를 이용한 빌드 자동화 시스템
@@ -108,7 +122,7 @@ public class HelloController {
 
 - byte 처리 등 여러 `HttpMessageConverter`가 기본으로 등록되어 있음
 
-## Annotation(@)
+## Annotation
 
 사전적 의미 : 주석
 
@@ -153,7 +167,7 @@ public class HelloController {
 
 - 비즈니스 로직을 수행하는 클래스라는 것을 나타냄
 
-[참고]([https://velog.io/@gillog/Spring-Annotation-정리#requestparam)
+[참고](https://velog.io/@gillog/Spring-Annotation-정리#requestparam)
 ## 일반적인 웹 애플리케이션 계층 구조
 
 ![image](https://user-images.githubusercontent.com/59433441/111621126-f24bf400-882a-11eb-8ee0-93750bc8aa02.png)
@@ -187,9 +201,9 @@ public class HelloController {
 ```java
 class MemoryMemberRepositoryTest {
 
-		MemoryMemberRepository repository = new MemoryMemberRepository();
+    MemoryMemberRepository repository = new MemoryMemberRepository();
 
-		@Test
+    @Test
     public void save() {
         Member member = new Member();
         member.setName("spring");
@@ -228,9 +242,9 @@ class MemoryMemberRepositoryTest {
 ```java
 class MemberServiceTest {
 
-		MemberService memberService;
+    MemberService memberService;
 
-		@Test
+    @Test
     void join() {
         // given
         Member member = new Member();
