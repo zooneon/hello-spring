@@ -16,6 +16,8 @@
 
 [테스트 케이스 작성](#테스트-케이스-작성)
 
+[스프링 빈과 의존관계](#스프링-빈과-의존관계)
+
 ## Gradle
 
 Groovy를 이용한 빌드 자동화 시스템
@@ -66,7 +68,7 @@ Groovy를 이용한 빌드 자동화 시스템
 @Controller
 public class HelloController {
 
-		// @ResponseBody 문자 반환
+    // @ResponseBody 문자 반환
     @GetMapping("hello-string")
     @ResponseBody
     public String helloString(@RequestParam("name") String name) {
@@ -96,7 +98,7 @@ public class HelloController {
         }
     }
 
-		// @ResponseBody 객체 반환
+    // @ResponseBody 객체 반환
     @GetMapping("hello-api")
     @ResponseBody
     public Hello helloApi(@RequestParam("name") String name) {
@@ -211,7 +213,7 @@ class MemoryMemberRepositoryTest {
         repository.save(member);
 
         Member result = repository.findById(member.getId()).get();
-				// 같으면 초록색, 다르면 빨간색
+        // 같으면 초록색, 다르면 빨간색
         assertThat(member).isEqualTo(result);
     }
 }
@@ -256,6 +258,62 @@ class MemberServiceTest {
         // then
         Member findMember = memberService.findOne(saveId).get();
         assertThat(member.getName()).isEqualTo(findMember.getName());
+    }
+}
+```
+
+## 스프링 빈과 의존관계
+
+객체 의존관계를 외부에서 넣어주는 것을 **DI**(Dependency Injection), **의존성 주입**이라고 한다.
+
+DI에는 필드 주입, setter 주입, 생성자 주입 3가지 방법이 있는데 의존관계가 실행중에 동적으로 변하는 경우는 거의 없으므로 생성자 주입을 권장한다.
+
+`@Autowired` 를 통한 DI는 스프링이 관리하는 객체에서만 동작한다.(스프링 빈으로 등록하지 않고 직접 생성한 객체에서는 동작하지 않음)
+
+생성자에 `@Autowired` 를 사용하면 객체 생성 시점에 스프링 컨테이너에서 해당 스프링 빈을 찾아 주입한다.
+
+스프링 컨테이너에 스프링 빈을 등록할 때, 기본으로 **싱글톤으로** 등록한다.(하나만 등록해서 공유)
+
+### 컴포넌트 스캔과 자동 의존관계 설정
+
+- `@Component` 어노테이션이 있으면 스프링 빈으로 자동 등록
+- `@Component` 을 포함하는 어노테이션들도 스프링 빈으로 자동 등록
+  - `@Controller`
+  - `@Service`
+  - `@Repository`
+- 정형화된 컨트롤러, 서비스, 레포지토리 같은 코드에 사용
+
+```java
+@Controller
+public class MemberController {
+
+    private final MemberService memberService;
+
+    @Autowired
+    public MemberController(MemberService memberService) {
+	       this.memberService = memberService;
+    }
+}
+```
+
+### 자바 코드로 직접 스프링 빈 등록하기
+
+- 직접 Configuration 파일을 만들어 사용
+- `@Bean` 어노테이션을 사용하여 스프링 빈으로 등록
+- 정형화 되지 않거나, 상황에 따라 구현 클래스를 변경해야 하는 경우 사용
+
+```java
+@Configuration
+public class SpringConfig {
+    
+    @Bean
+    public MemberService memberService() {
+        return new MemberService(memberRepository());
+    }
+    
+    @Bean
+    public MemberRepository memberRepository() {
+      return new MemoryMemberRepository();
     }
 }
 ```
