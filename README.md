@@ -317,3 +317,43 @@ public class SpringConfig {
     }
 }
 ```
+## 스프링 통합 테스트
+
+```java
+@SpringBootTest
+@Transactional
+class MemberServiceIntegrationTest {
+
+    @Autowired MemberService memberService;
+    @Autowired MemberRepository memberRepository;
+
+    @Test
+    void join() {
+        ...
+    }
+		
+    ...
+}
+```
+
+### @SpringBootTest
+
+스프링 컨테이너와 테스트를 함께 실행한다.
+
+### @Transactional
+
+테스트 케이스에 이 어노테이션이 있으면 테스트 시작 전에 트랜잭션을 시작하고, 테스트 완료 후에 항상 롤백한다.
+
+이렇게 하면 DB에 데이터가 남지 않으므로 다음 테스트에 영향을 주지 않아 계속적인 테스트가 가능하다.
+
+→ 하지만 테스트에 `@Commit` 어노테이션이 있으면 롤백하지 않고 테스트 데이터가 DB에 저장된다.
+
+```java
+@Test
+@Commit
+void join() {
+    ...
+}
+```
+
+**스프링 컨테이너를 이용한 통합 테스트보다 자바로 이루어진 단위 테스트가 좋을 확률이 높다!**
