@@ -364,3 +364,34 @@ void join() {
 **스프링 컨테이너를 이용한 통합 테스트보다 자바로 이루어진 단위 테스트가 좋을 확률이 높다!**
 
 ## JPA
+JPA는 기존의 반복 코드는 물론이고 기본적인 SQL도 JPA가 직접 만들어서 실행해준다.
+
+JPA를 사용하면 SQL과 데이터 중심의 설계에서 객체 중심의 설계로 패러다임을 전달할 수 있다.
+
+JPA를 사용하면 개발 생산성을 크게 높일 수 있다.
+
+```java
+spring.jpa.show-sql=true
+spring.jpa.hibernate.ddl-auto=none
+```
+
+**spring.jpa.show-sql**
+
+- JPA가 생성하는 SQL을 출력한다.
+
+**spring.jpa.hibernate.ddl-auto**
+
+- JPA는 테이블을 자동으로 생성하는 기능을 제공하는데, `none`을 사용하면 해당 기능을 끈다.
+- `create`을 사용하면 entity 정보를 바탕으로 테이블도 직접 생성해준다.
+
+### @Transactional
+
+```java
+import org.springframework.transaction.annotation.Transactional
+
+@Transactional
+```
+
+- 스프링은 해당 클래스의 메서드를 실행할 때 트랜잭션을 시작하고, 메서드가 정상 종료되면 트랜잭션을 커밋한다.
+- 런타임 에러가 발생하면 롤백한다.
+- JPA를 통한 모든 데이터 변경은 트랜잭션 안에서 실행해야 한다.
